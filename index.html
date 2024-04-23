@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signup Page</title>
+<style>
+  /* Basic CSS for styling */
+  body {
+    font-family: Arial, sans-serif;
+  }
+  form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  input[type="text"], input[type="password"], input[type="email"], input[type="checkbox"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+  }
+  input[type="submit"]:hover {
+    background-color: #45a049;
+  }
+  .error {
+    color: red;
+  }
+</style>
+</head>
+<body>
+<form id="signupForm">
+  <h2>Signup</h2>
+  <div>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+  </div>
+  <div>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+  </div>
+  <div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+  </div>
+  <div>
+    <label for="confirmPassword">Confirm Password:</label>
+    <input type="password" id="confirmPassword" name="confirmPassword" required>
+  </div>
+  <div>
+    <label for="parentalConsent">Parental Consent:</label>
+    <input type="checkbox" id="parentalConsent" name="parentalConsent">
+  </div>
+  <div>
+    <input type="submit" value="Signup">
+  </div>
+  <div id="error" class="error"></div>
+</form>
+
+<script>
+  // Client-side input validation
+  document.getElementById('signupForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    var username = document.getElementById('username').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var password = document.getElementById('password').value;
+    var confirmPassword = document.getElementById('confirmPassword').value;
+    var parentalConsent = document.getElementById('parentalConsent').checked;
+
+    // Check if password meets strength requirements (at least 8 characters long)
+    if (password.length < 8) {
+      document.getElementById('error').textContent = 'Password must be at least 8 characters long';
+      return;
+    }
+
+    // Check if password and confirm password match
+    if (password !== confirmPassword) {
+      document.getElementById('error').textContent = 'Passwords do not match';
+      return;
+    }
+
+    // If parental consent is required, check if it's given
+    if (parentalConsent) {
+      // Additional logic for parental consent if needed
+    }
+
+    // Clear error message if everything is valid
+    document.getElementById('error').textContent = '';
+
+    try {
+      const response = await fetch('/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          parentalConsent
+        })
+      });
+      const data = await response.json();
+      alert(data.message); // Show success or error message to the user
+      if (response.ok) {
+        window.location.href = 'profile.html'; // Redirect to profile page
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again later.');
+    }
+  });
+  
+</script>
+</body>
+</html>
